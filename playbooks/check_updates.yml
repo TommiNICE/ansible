@@ -1,0 +1,14 @@
+---
+- name: Check for available updates on all hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update APT package cache (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: "ansible_os_family == 'Debian'"
+      
+    - name: Check for updates using YUM (Red Hat/CentOS)
+      yum:
+        list: updates
+      when: "ansible_os_family == 'RedHat'"

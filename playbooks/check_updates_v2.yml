@@ -1,0 +1,29 @@
+---
+- name: Check for available updates on all hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Check for available updates (Debian/Ubuntu)
+      apt:
+        upgrade: safe
+        update_cache: yes
+      when: "ansible_os_family == 'Debian'"
+      register: debian_updates
+
+    - name: Display available updates (Debian/Ubuntu)
+      debug:
+        var: debian_updates.stdout_lines
+      when: debian_updates.stdout_lines|length > 0
+
+    - name: Check for available updates (Red Hat/CentOS)
+      command: yum list updates
+      register: redhat_updates
+      ignore_errors: yes
+      changed_when: false
+      when: "ansible_os_family == 'RedHat'"
+
+    - name: Display available updates (Red Hat/CentOS)
+      debug:
+        var: redhat_updates.stdout_lines
+      when: redhat_updates.rc == 0 and redhat_updates.stdout_lines|length > 2
+
