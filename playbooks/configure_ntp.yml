@@ -1,0 +1,36 @@
+---
+- name: Configure NTP Server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install chrony (Debian/Ubuntu)
+      apt:
+        name: chrony
+      when: "ansible_os_family == 'Debian'"
+
+    - name: Install chrony (Red Hat/CentOS)
+      yum:
+        name: chrony
+      when: "ansible_os_family == 'RedHat'"
+
+    - name: Configure NTP servers
+      template:
+        src: ntp.conf.j2
+        dest: /etc/chrony/chrony.conf
+      notify: Restart chronyd
+
+    - name: Ensure chronyd service is enabled and started
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+      notify: Restart chronyd
+
+  handlers:
+    - name: Restart chronyd
+      service:
+        name: chronyd
+        state: restarted
+
+
+
