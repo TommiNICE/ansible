@@ -1,3 +1,12 @@
-[my_hosts]
-1d ansible_host=100.88.179.136	ansible_user=dietpi
-2d ansible_host=100.88.38.22	ansible_user=dietpi
+[d1] 
+100.88.179.136
+
+[d2] 
+100.88.38.22
+
+
+[all:children]
+d1
+d2
+[all:vars]
+ansible_user=dietpi
