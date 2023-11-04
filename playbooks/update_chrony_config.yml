@@ -1,9 +1,9 @@
 ---
-- name: Configure NTP Server
+- name: Update chrony.conf file
   hosts: all
   become: yes
   tasks:
-    - name: Configure NTP servers
+    - name: Update chrony.conf file
       template:
         src: ntp.conf.j2
         dest: /etc/chrony/chrony.conf
