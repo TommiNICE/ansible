@@ -1,0 +1,24 @@
+---
+- name: Disable SSH Root Login
+  hosts: all
+  become: yes
+  tasks:
+    - name: Disable SSH Root Login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: '#'
+      notify: Restart SSH Service
+
+    - name: Ensure SSH service is running
+      service:
+        name: ssh
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart SSH Service
+      service:
+        name: ssh
+        state: restarted
+
